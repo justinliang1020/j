@@ -1,4 +1,4 @@
-module github.com/justinliang1020/justin-cli
+module github.com/justinliang1020/j
 
 go 1.23.0
 

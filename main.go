@@ -57,6 +57,9 @@ func main() {
 						},
 						Action: func(cCtx *cli.Context) error {
 							input := cCtx.Args().First()
+							if input == "" {
+								return fmt.Errorf("Error: no input image")
+							}
 							output := cCtx.String("output")
 							quality := cCtx.Int("quality")
 							if output == "" {
