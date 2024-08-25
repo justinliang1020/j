@@ -32,6 +32,7 @@ func runCommand(command string, args ...string) (string, error) {
 
 func main() {
 	app := &cli.App{
+		Name: "j",
 		Commands: []*cli.Command{
 			{
 				Name:    "image",
@@ -40,14 +41,8 @@ func main() {
 				Subcommands: []*cli.Command{
 					{
 						Name:  "compress",
-						Usage: "compress an image using ffmpeg",
+						Usage: "j image image.png",
 						Flags: []cli.Flag{
-							&cli.StringFlag{
-								Name:     "input",
-								Aliases:  []string{"i"},
-								Usage:    "input image file",
-								Required: true,
-							},
 							&cli.StringFlag{
 								Name:    "output",
 								Aliases: []string{"o"},
@@ -61,7 +56,7 @@ func main() {
 							},
 						},
 						Action: func(cCtx *cli.Context) error {
-							input := cCtx.String("input")
+							input := cCtx.Args().First()
 							output := cCtx.String("output")
 							quality := cCtx.Int("quality")
 							if output == "" {
@@ -75,15 +70,16 @@ func main() {
 								"-i", input,
 								"-q:v", fmt.Sprintf("%d", quality),
 								"-y",
+								"-loglevel", "error",
 								output,
 							}
 
-							result, err := runCommand("ffmpeg", args...)
+							_, err := runCommand("ffmpeg", args...)
 							if err != nil {
 								return fmt.Errorf("failed to compress image: %v", err)
 							}
 
-							fmt.Printf("Image compressed successfully: %s\n", result)
+							fmt.Printf("Image compressed successfully. Created %s\n", output)
 							return nil
 						},
 					},
